@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,9 +9,11 @@ namespace BankAPI.Models
     public abstract class Account: IAccount
     {
 
-        public static Int32 idCounter { get; private set; } = 0;
 
-        public Int32 id {get; private set; }
+        public static Int32 idCounter { get;private set; } = 1;
+
+        [Key]
+        public Int32 id {get; set; }
 
         public string accountNumber { get; private set; }
 
@@ -26,11 +29,14 @@ namespace BankAPI.Models
 
         protected Account(string accountNumber, string owner, decimal balance, string currency)
         {
-            this.id = Account.idCounter++;
+            id = idCounter;
+            idCounter++;
             this.accountNumber = accountNumber;
             this.owner = owner;
             this.balance = balance;
             this.currency = currency;
         }
+
+        protected Account() { }
     }
 }

@@ -8,7 +8,9 @@ namespace BankAPI.Models
     public class SavingsAccount : Account, IAccount
     {
 
-        public decimal interestRate;
+        public decimal interestRate { get; set; }
+
+        public SavingsAccount() { }
 
         public SavingsAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
             :base(accountNumber, owner, balance, currency)
