@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankAPI.Controllers
 {
-    [Route("api/")]
+    [Route("account/")]
     public class AccountController : ControllerBase
     {
 
@@ -22,22 +22,41 @@ namespace BankAPI.Controllers
             accountService = new AccountService(this.memrepo);
         }
 
-        [HttpGet("get-all")]
-        public List<SavingsAccount> GetAll()
+        [HttpGet]
+        public IActionResult getAllCreditCard()
         {
-            return accountService.getAllSavingsAccounts();
+            return new OkObjectResult(accountService.getAllAccount());
         }
 
-        [HttpPost("new")]
-        public SavingsAccount Post()
+        [HttpGet("{type}")]
+        public IActionResult GetAllCreditcardOfType(string type)
         {
-            return accountService.CreateSavingsAccount("12312", "Péter Princz", 10000, "HUF", 5);
+            if (type.Equals("deposit"))
+            {
+                return new OkObjectResult(accountService.getAllDepositAccounts());
+            }
+            if (type.Equals("savings"))
+            {
+                return new OkObjectResult(accountService.getAllSavingsAccounts());
+            }
+            return new BadRequestObjectResult("there is no Account with type of " + type);
         }
 
-        // PUT api/values/5
-        [HttpGet("get/{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPost]
+        public IActionResult Post()
         {
+            return new OkObjectResult(accountService.CreateSavingsAccount("12312", "Péter Princz", 10000, "HUF", 5));
+        }
+
+        [HttpGet("id/{id}")]
+        public IActionResult getAccountById(Int32 id)
+        {
+            Account account = accountService.getAccountById(id);
+            if(account == null)
+            {
+                return new NotFoundObjectResult("Creditcard was not found with id of" + id);
+            }
+            return new OkObjectResult(account);
         }
 
         // DELETE api/values/5

@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace BankAPI.Models
 {
-    public class DepositAccount:Account, IAccount
+    public class DepositAccount : Account, IAccount
     {
         public decimal creditLimit;
+
+
+        public DepositAccount() { }
 
         public DepositAccount(string accountNumber, string owner, decimal balance, string currency, decimal creditLimit)
             : base(accountNumber, owner, balance, currency)

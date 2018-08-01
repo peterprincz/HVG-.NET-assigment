@@ -16,7 +16,7 @@ namespace BankAPI.Services
             this.memrepo = memrepo;
         }
 
-        public SavingsAccount CreateSavingsAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
+        public Account CreateSavingsAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
         {
             SavingsAccount account = new SavingsAccount(accountNumber, owner, balance, currency, interestRate);
             memrepo.savingsAccounts.Add(account);
@@ -32,14 +32,17 @@ namespace BankAPI.Services
             return account;
         }
 
-        public SavingsAccount getSavingsAccountById(Int32 id)
+        public Account getAccountById(Int32 id)
         {
-            return memrepo.savingsAccounts.Find(id);
-        }
-
-        public DepositAccount getDepositById(Int32 id)
-        {
-            return memrepo.deposticAccounts.Find(id);
+            Account account;
+            if (memrepo.savingsAccounts.Find(id) != null)
+            {
+                account = memrepo.savingsAccounts.Find(id);
+            } else
+            {
+                account = memrepo.deposticAccounts.Find(id);
+            }
+            return account;
         }
 
         public List<SavingsAccount> getAllSavingsAccounts()
@@ -52,8 +55,14 @@ namespace BankAPI.Services
             return new List<DepositAccount>(memrepo.deposticAccounts);
         }
 
+        public List<Account> getAllAccount()
+        {
+            List<Account> allAccounts = new List<Account>();
+            allAccounts.AddRange(memrepo.deposticAccounts);
+            allAccounts.AddRange(memrepo.savingsAccounts);
+            return allAccounts;
 
-
+        }
     }
 }
 
