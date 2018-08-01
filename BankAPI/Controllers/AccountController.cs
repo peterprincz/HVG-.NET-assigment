@@ -110,5 +110,28 @@ namespace BankAPI.Controllers
             return new OkObjectResult(accountService.uploadAmount(account, amount));
         }
 
+        [HttpPost("transfer")]
+        public IActionResult transferMoney([FromBody]Dictionary<String, String> jsonMap)
+        {
+            Int32 senderAccountId = Int32.Parse(jsonMap["senderId"]);
+            Int32 receiverAccountId = Int32.Parse(jsonMap["receiverId"]);
+            decimal amount = Decimal.Parse(jsonMap["amount"]);
+            Account senderAccount = accountService.getAccountById(senderAccountId);
+            Account receiverAccount = accountService.getAccountById(receiverAccountId);
+            if (senderAccount == null || receiverAccount == null)
+            {
+                return StatusCode(404);
+            }
+            if (amount <= 0)
+            {
+                return new BadRequestObjectResult("Invalid money amount");
+            }
+            if (!senderAccount.isAmountWithdrawable(amount))
+            {
+                return new BadRequestObjectResult("Sender has innuficcsen funds");
+            }
+            return new OkObjectResult(accountService.transferMoney(senderAccount, receiverAccount, amount));
+        }
+
     }
 }

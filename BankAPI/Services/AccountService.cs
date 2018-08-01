@@ -91,6 +91,16 @@ namespace BankAPI.Services
             return account;
         }
 
+        public void transferMoney(Account senderAccount, Account receiverAccount, Int32 amount)
+        {
+            if (!senderAccount.isAmountWithdrawable(amount)) {
+                throw new ArgumentException("Innuficcen funds");
+            }
+            receiverAccount.uploadMoney(amount);
+            senderAccount.withDraw(amount);
+            memrepo.SaveChanges();
+        }
+
 
     }
 }
