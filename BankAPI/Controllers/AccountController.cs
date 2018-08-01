@@ -45,11 +45,11 @@ namespace BankAPI.Controllers
         [HttpPost]
         public IActionResult createAccount([FromBody]Dictionary<String, String> jsonMap)
         {
-            Account account = accountService.createNewAccount(jsonMap["type"], jsonMap["name"]);
+            Account account = accountService.createNewAccount(jsonMap["type"], jsonMap["name"], jsonMap["currency"]);
             return new OkObjectResult(account);
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("{id}")]
         public IActionResult getAccountById(Int32 id)
         {
             Account account = accountService.getAccountById(id);
@@ -61,8 +61,18 @@ namespace BankAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult delete(Int32 id)
         {
+
+            Account account = accountService.getAccountById(id);
+            if (account == null)
+            {
+                return StatusCode(404);
+            }
+            accountService.deleteAccount(account);
+            return StatusCode(404);
         }
+
+
     }
 }

@@ -12,6 +12,7 @@ namespace BankAPI.Models
         public string TYPE {get; set;}
 
         public static Int32 idCounter { get;private set; } = 1;
+        public static Int32 accountNumberCounter { get; private set; } = 1000000;
 
         [Key]
         public Int32 id {get; set; }
@@ -28,13 +29,14 @@ namespace BankAPI.Models
         public abstract void uploadMoney(decimal amount);
         public abstract void withDraw(decimal amount);
 
-        protected Account(string accountNumber, string owner, decimal balance, string currency)
+        protected Account(string owner, string currency)
         {
             id = idCounter;
             idCounter++;
-            this.accountNumber = accountNumber;
+            this.accountNumber = "0123-" + accountNumberCounter.ToString() + "354";
+            accountNumberCounter++;
             this.owner = owner;
-            this.balance = balance;
+            this.balance = 0;
             this.currency = currency;
         }
 

@@ -14,11 +14,11 @@ namespace BankAPI.Models
             this.TYPE = "deposit";
         }
 
-        public SavingsAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
-            :base(accountNumber, owner, balance, currency)
+        public SavingsAccount(string owner, string currency)
+            :base(owner, currency)
         {
             this.TYPE = "deposit";
-            this.interestRate = interestRate;
+            this.interestRate = 5;
         }
 
 

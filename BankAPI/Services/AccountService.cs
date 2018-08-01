@@ -22,7 +22,7 @@ namespace BankAPI.Services
             memrepo.SaveChanges();
         }
 
-        public Account createNewAccount(String type, String ownerName)
+        public Account createNewAccount(String type, String ownerName, String currency)
         {
             if(!type.Equals("deposit") && !type.Equals("savings"))
             {
@@ -30,14 +30,14 @@ namespace BankAPI.Services
             }
             if (type.Equals("deposit"))
             {
-                DepositAccount account = new DepositAccount("01234-567", ownerName, 0, "HUF", 50000);
+                DepositAccount account = new DepositAccount(ownerName,currency);
                 memrepo.deposticAccounts.Add(account);
                 memrepo.SaveChanges();
                 return account;
             }
             else
             {
-                SavingsAccount account = new SavingsAccount("123-213-132", ownerName, 0, "HUF", 5);
+                SavingsAccount account = new SavingsAccount(ownerName, currency);
                 memrepo.savingsAccounts.Add(account);
                 memrepo.SaveChanges();
                 return account;
@@ -65,7 +65,11 @@ namespace BankAPI.Services
             allAccounts.AddRange(memrepo.deposticAccounts);
             allAccounts.AddRange(memrepo.savingsAccounts);
             return allAccounts;
+        }
 
+        public void deleteAccount(Account account)
+        {
+            memrepo.Remove(account);
         }
 
 
