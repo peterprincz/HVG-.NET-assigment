@@ -10,11 +10,14 @@ namespace BankAPI.Models
 
         public decimal interestRate { get; set; }
 
-        public SavingsAccount() { }
+        public SavingsAccount() {
+            this.TYPE = "deposit";
+        }
 
         public SavingsAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
             :base(accountNumber, owner, balance, currency)
         {
+            this.TYPE = "deposit";
             this.interestRate = interestRate;
         }
 

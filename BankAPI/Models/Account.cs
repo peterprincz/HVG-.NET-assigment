@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace BankAPI.Models
 {
-    public abstract class Account: IAccount
+    public abstract class Account : IAccount
     {
 
+        public string TYPE {get; set;}
 
         public static Int32 idCounter { get;private set; } = 1;
 

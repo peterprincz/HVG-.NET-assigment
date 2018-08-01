@@ -10,11 +10,14 @@ namespace BankAPI.Models
         public decimal creditLimit;
 
 
-        public DepositAccount() { }
+        public DepositAccount() {
+            this.TYPE = "deposit";
+        }
 
         public DepositAccount(string accountNumber, string owner, decimal balance, string currency, decimal creditLimit)
             : base(accountNumber, owner, balance, currency)
         {
+            this.TYPE = "deposit";
             this.creditLimit = creditLimit;
         }
 

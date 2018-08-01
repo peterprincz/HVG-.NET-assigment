@@ -16,33 +16,37 @@ namespace BankAPI.Services
             this.memrepo = memrepo;
         }
 
-        public Account CreateSavingsAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
+        public void saveAccount(Account account)
         {
-            SavingsAccount account = new SavingsAccount(accountNumber, owner, balance, currency, interestRate);
-            memrepo.savingsAccounts.Add(account);
+            memrepo.addAbstractAccount(account);
             memrepo.SaveChanges();
-            return account;
         }
 
-        public DepositAccount CreateDepositAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
+        public Account createNewAccount(String type, String ownerName)
         {
-            DepositAccount account = new DepositAccount(accountNumber, owner, balance, currency, interestRate);
-            memrepo.deposticAccounts.Add(account);
-            memrepo.SaveChanges();
-            return account;
+            if(!type.Equals("deposit") && !type.Equals("savings"))
+            {
+                throw new ArgumentException("Invalid Account type");
+            }
+            if (type.Equals("deposit"))
+            {
+                DepositAccount account = new DepositAccount("01234-567", ownerName, 0, "HUF", 50000);
+                memrepo.deposticAccounts.Add(account);
+                memrepo.SaveChanges();
+                return account;
+            }
+            else
+            {
+                SavingsAccount account = new SavingsAccount("123-213-132", ownerName, 0, "HUF", 5);
+                memrepo.savingsAccounts.Add(account);
+                memrepo.SaveChanges();
+                return account;
+            }
         }
 
         public Account getAccountById(Int32 id)
         {
-            Account account;
-            if (memrepo.savingsAccounts.Find(id) != null)
-            {
-                account = memrepo.savingsAccounts.Find(id);
-            } else
-            {
-                account = memrepo.deposticAccounts.Find(id);
-            }
-            return account;
+            return memrepo.findAbstractAccountById(id);
         }
 
         public List<SavingsAccount> getAllSavingsAccounts()
@@ -63,6 +67,8 @@ namespace BankAPI.Services
             return allAccounts;
 
         }
+
+
     }
 }
 

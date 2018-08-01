@@ -43,9 +43,10 @@ namespace BankAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post()
+        public IActionResult createAccount([FromBody]Dictionary<String, String> jsonMap)
         {
-            return new OkObjectResult(accountService.CreateSavingsAccount("12312", "Péter Princz", 10000, "HUF", 5));
+            Account account = accountService.createNewAccount(jsonMap["type"], jsonMap["name"]);
+            return new OkObjectResult(account);
         }
 
         [HttpGet("id/{id}")]
@@ -59,7 +60,6 @@ namespace BankAPI.Controllers
             return new OkObjectResult(account);
         }
 
-        // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
