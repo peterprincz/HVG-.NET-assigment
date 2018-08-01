@@ -8,11 +8,11 @@ namespace BankAPI.Models
     interface IAccount
     {
 
-        bool isAmountWithdrawable();
+        bool isAmountWithdrawable(decimal amount);
 
         void withDraw(decimal amount);
 
-        void uploadMoney();
+        void uploadMoney(decimal amount);
 
     }
 }

@@ -5,29 +5,47 @@ using System.Threading.Tasks;
 
 namespace BankAPI.Models
 {
-    public class SavingsAccount : Account
+    public class SavingsAccount : Account, IAccount
     {
 
-        decimal interestRate;
+        public decimal interestRate;
 
-        public SavingsAccount(string decimal interestRate)
+        public SavingsAccount(string accountNumber, string owner, decimal balance, string currency, decimal interestRate)
+            :base(accountNumber, owner, balance, currency)
         {
             this.interestRate = interestRate;
         }
 
-        public override bool isAmountWithdrawable()
+
+        public override bool isAmountWithdrawable(decimal amount)
         {
-            throw new NotImplementedException();
+            if(amount <= 0)
+            {
+                throw new ArgumentException("Negative money was passed");
+            }
+            return balance >= amount; 
         }
 
-        public override void uploadMoney()
+        public override void uploadMoney(decimal amount)
         {
-            throw new NotImplementedException();
+            if (amount <= 0)
+            {
+                throw new ArgumentException("Negative money was passed");
+            }
+            balance += amount;
         }
 
         public override void withDraw(decimal amount)
         {
-            throw new NotImplementedException();
+            if (amount <= 0)
+            {
+                throw new ArgumentException("Negative money was passed");
+            }
+            if (!isAmountWithdrawable(amount))
+            {
+                throw new ArgumentException(String.Format($"{0} is not drawable from account : {1}", amount.ToString(), accountNumber));
+            }
+            balance -= amount;
         }
     }
 }
