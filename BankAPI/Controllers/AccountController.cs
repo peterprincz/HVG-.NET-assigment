@@ -73,6 +73,42 @@ namespace BankAPI.Controllers
             return StatusCode(404);
         }
 
+        [HttpPut("withdraw")]
+        public IActionResult withDrawMoney([FromBody]Dictionary<String, String> jsonMap)
+        {
+            Int32 accountId = Int32.Parse(jsonMap["id"]);
+            decimal amount = Decimal.Parse(jsonMap["amount"]);
+            Account account = accountService.getAccountById(accountId);
+            if(account == null)
+            {
+                return StatusCode(404);
+            }
+            if(amount <= 0)
+            {
+                return new BadRequestObjectResult("Invalid money amount");
+            }
+            if (!accountService.canWithDrawAmount(account, amount) ){
+                return new BadRequestObjectResult("Can't withdraw that amount");
+            }
+            return new OkObjectResult(accountService.withDrawAmount(account, amount));
+        }
+
+        [HttpPut("upload")]
+        public IActionResult uploadMoney([FromBody]Dictionary<String, String> jsonMap)
+        {
+            Int32 accountId = Int32.Parse(jsonMap["id"]);
+            decimal amount = Decimal.Parse(jsonMap["amount"]);
+            Account account = accountService.getAccountById(accountId);
+            if (account == null)
+            {
+                return StatusCode(404);
+            }
+            if (amount <= 0)
+            {
+                return new BadRequestObjectResult("Invalid money amount");
+            }
+            return new OkObjectResult(accountService.uploadAmount(account, amount));
+        }
 
     }
 }

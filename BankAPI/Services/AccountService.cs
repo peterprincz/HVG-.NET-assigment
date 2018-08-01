@@ -72,6 +72,25 @@ namespace BankAPI.Services
             memrepo.Remove(account);
         }
 
+        public bool canWithDrawAmount(Account account, decimal amount)
+        {
+            return account.isAmountWithdrawable(amount);
+        }
+
+        public Account withDrawAmount(Account account, decimal amount)
+        {
+            account.withDraw(amount);
+            memrepo.SaveChanges();
+            return account;
+        }
+
+        public Account uploadAmount(Account account, decimal amount)
+        {
+            account.uploadMoney(amount);
+            memrepo.SaveChanges();
+            return account;
+        }
+
 
     }
 }
