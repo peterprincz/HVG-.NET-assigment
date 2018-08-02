@@ -28,6 +28,10 @@ namespace BankAPI.Services
             {
                 throw new ArgumentException("Invalid Account type");
             }
+            if (ownerName.Length < 4|| !ownerName.Contains(" "))
+            {
+                throw new ArgumentException("Invalid Account type");
+            }
             if (type.Equals("deposit"))
             {
                 DepositAccount account = new DepositAccount(ownerName,currency);
@@ -47,16 +51,6 @@ namespace BankAPI.Services
         public Account getAccountById(Int32 id)
         {
             return memrepo.findAbstractAccountById(id);
-        }
-
-        public List<SavingsAccount> getAllSavingsAccounts()
-        {
-            return new List<SavingsAccount>(memrepo.savingsAccounts);
-        }
-
-        public List<DepositAccount> getAllDepositAccounts()
-        {
-            return new List<DepositAccount>(memrepo.deposticAccounts);
         }
 
         public List<Account> getAllAccount()
@@ -94,7 +88,7 @@ namespace BankAPI.Services
         public void transferMoney(Account senderAccount, Account receiverAccount, decimal amount)
         {
             if (!senderAccount.isAmountWithdrawable(amount)) {
-                throw new ArgumentException("Innuficcen funds");
+                throw new ArgumentException("insufficient funds");
             }
             receiverAccount.uploadMoney(amount);
             senderAccount.withDraw(amount);
