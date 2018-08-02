@@ -7,12 +7,10 @@ namespace BankAPI.Models
 {
     public class DepositAccount : Account, IAccount
     {
-        public decimal creditLimit = 5000;
-
+        public decimal creditLimit { get; set; } = 50000;
 
         public DepositAccount() {
-            this.TYPE = "deposit";
-
+            TYPE = "deposit";
         }
 
         public DepositAccount(string owner, string currency)
@@ -21,10 +19,9 @@ namespace BankAPI.Models
             TYPE = "deposit";
         }
 
-
         public override bool isAmountWithdrawable(decimal amount)
         {
-            if (amount <= 0)
+            if (amount < 0)
             {
                 throw new ArgumentException("Negative money was passed");
             }
@@ -33,7 +30,7 @@ namespace BankAPI.Models
 
         public override void uploadMoney(decimal amount)
         {
-            if (amount <= 0)
+            if (amount < 0)
             {
                 throw new ArgumentException("Negative money was passed");
             }
@@ -42,7 +39,7 @@ namespace BankAPI.Models
 
         public override void withDraw(decimal amount)
         {
-            if (amount <= 0)
+            if (amount < 0)
             {
                 throw new ArgumentException("Negative money was passed");
             }

@@ -26,7 +26,7 @@ namespace BankAPI.Models
 
         public override bool isAmountWithdrawable(decimal amount)
         {
-            if(amount <= 0)
+            if(amount < 0)
             {
                 throw new ArgumentException("Negative money was passed");
             }
@@ -35,7 +35,7 @@ namespace BankAPI.Models
 
         public override void uploadMoney(decimal amount)
         {
-            if (amount <= 0)
+            if (amount < 0)
             {
                 throw new ArgumentException("Negative money was passed");
             }
@@ -44,7 +44,7 @@ namespace BankAPI.Models
 
         public override void withDraw(decimal amount)
         {
-            if (amount <= 0)
+            if (amount < 0)
             {
                 throw new ArgumentException("Negative money was passed");
             }
