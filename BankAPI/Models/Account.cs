@@ -12,12 +12,12 @@ namespace BankAPI.Models
         public string TYPE {get; set;}
 
         public static Int32 idCounter { get;private set; } = 1;
-        public static Int32 accountNumberCounter { get; private set; } = 1000000;
+        public static Int32 accountNumberCounter { get; set; } = 10;
 
         [Key]
         public Int32 id {get; set; }
 
-        public string accountNumber { get; private set; }
+        public string accountNumber { get; set; }
 
         public string owner { get; set; }
 
@@ -33,10 +33,10 @@ namespace BankAPI.Models
         {
             id = idCounter;
             idCounter++;
-            this.accountNumber = "0123-" + accountNumberCounter.ToString() + "354";
-            accountNumberCounter++;
+            accountNumber = "012-" + accountNumberCounter.ToString() + "354";
+            accountNumberCounter += 6191;
             this.owner = owner;
-            this.balance = 0;
+            balance = 0;
             this.currency = currency;
         }
 

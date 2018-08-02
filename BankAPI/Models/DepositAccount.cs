@@ -7,18 +7,18 @@ namespace BankAPI.Models
 {
     public class DepositAccount : Account, IAccount
     {
-        public decimal creditLimit;
+        public decimal creditLimit = 5000;
 
 
         public DepositAccount() {
             this.TYPE = "deposit";
+
         }
 
         public DepositAccount(string owner, string currency)
             : base(owner, currency)
         {
-            this.TYPE = "deposit";
-            this.creditLimit = 50000;
+            TYPE = "deposit";
         }
 
 

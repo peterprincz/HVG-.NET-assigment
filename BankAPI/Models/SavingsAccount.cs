@@ -7,18 +7,20 @@ namespace BankAPI.Models
 {
     public class SavingsAccount : Account, IAccount
     {
+        public decimal startingMoney = 5000;
 
         public decimal interestRate { get; set; }
 
         public SavingsAccount() {
-            this.TYPE = "deposit";
+            this.TYPE = "savings";
         }
 
         public SavingsAccount(string owner, string currency)
             :base(owner, currency)
         {
-            this.TYPE = "deposit";
-            this.interestRate = 5;
+            TYPE = "deposit";
+            interestRate = 5;
+            balance = startingMoney;
         }
 
 
