@@ -24,7 +24,7 @@ namespace BankAPI.Services
 
         public Account createNewAccount(String type, String ownerName, String currency)
         {
-            if(!type.Equals("deposit") && !type.Equals("savings"))
+            if (!(type.Equals("deposit") || type.Equals("savings")))
             {
                 throw new ArgumentException("Invalid Account type");
             }
@@ -91,7 +91,7 @@ namespace BankAPI.Services
             return account;
         }
 
-        public void transferMoney(Account senderAccount, Account receiverAccount, Int32 amount)
+        public void transferMoney(Account senderAccount, Account receiverAccount, decimal amount)
         {
             if (!senderAccount.isAmountWithdrawable(amount)) {
                 throw new ArgumentException("Innuficcen funds");
