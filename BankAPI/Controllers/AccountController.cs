@@ -9,17 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankAPI.Controllers
 {
-    [Route("account/")]
+    [Route("api/")]
     public class AccountController : ControllerBase
     {
 
         private readonly MemRepo memrepo;
         AccountService accountService;
+        CurrencyService currencyService;
 
         public AccountController(MemRepo memrepo)
         {
             this.memrepo = memrepo;
             accountService = new AccountService(this.memrepo);
+            this.currencyService = new CurrencyService();
         }
 
         [HttpGet]
@@ -49,7 +51,7 @@ namespace BankAPI.Controllers
             Account account = accountService.createNewAccount(jsonMap["type"], jsonMap["name"], jsonMap["currency"]);
                 return new OkObjectResult(account);
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 return new BadRequestObjectResult("Invalid account type");
             }
@@ -86,7 +88,7 @@ namespace BankAPI.Controllers
             decimal amount;
             try { 
                 amount = Decimal.Parse(jsonMap["amount"]);
-            } catch(FormatException e)
+            } catch(FormatException)
             {
                 return new BadRequestObjectResult("invalid money format");
             }
@@ -114,7 +116,7 @@ namespace BankAPI.Controllers
             {
                 amount = Decimal.Parse(jsonMap["amount"]);
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 return new BadRequestObjectResult("invalid money format");
             }
@@ -131,32 +133,37 @@ namespace BankAPI.Controllers
         }
 
         [HttpPost("transfer")]
-        public IActionResult transferMoney([FromBody]Dictionary<String, String> jsonMap)
+        public async Task<IActionResult> transferMoney([FromBody]Dictionary<String, String> jsonMap)
         {
-            Int32 senderAccountId = Int32.Parse(jsonMap["senderId"]);
-            Int32 receiverAccountId = Int32.Parse(jsonMap["receiverId"]);
+            Account senderAccount = accountService.getAccountById(Int32.Parse(jsonMap["senderId"]));
+            Account receiverAccount = accountService.getAccountById(Int32.Parse(jsonMap["receiverId"]));
             decimal amount;
             try
             {
                 amount = Decimal.Parse(jsonMap["amount"]);
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 return new BadRequestObjectResult("invalid money format");
-            }
-            Account senderAccount = accountService.getAccountById(senderAccountId);
-            Account receiverAccount = accountService.getAccountById(receiverAccountId);
-            if (senderAccount == null || receiverAccount == null)
-            {
-                return StatusCode(404);
             }
             if (amount <= 0)
             {
                 return new BadRequestObjectResult("Invalid money amount");
             }
+            if (senderAccount == null || receiverAccount == null)
+            {
+                return StatusCode(404);
+            }
             if (!senderAccount.isAmountWithdrawable(amount))
             {
                 return new BadRequestObjectResult("Sender has innuficcsen funds");
+            }
+            try { 
+                decimal moneyExchaned = await currencyService.exChange(100m, receiverAccount.currency, senderAccount.currency);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new BadRequestObjectResult("Unkown currency");
             }
             accountService.transferMoney(senderAccount, receiverAccount, amount);
             return new OkResult();
