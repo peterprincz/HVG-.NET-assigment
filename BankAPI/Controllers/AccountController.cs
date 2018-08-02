@@ -21,7 +21,7 @@ namespace BankAPI.Controllers
         {
             this.memrepo = memrepo;
             accountService = new AccountService(this.memrepo);
-            this.currencyService = new CurrencyService();
+            currencyService = new CurrencyService();
         }
 
         [HttpGet]
@@ -30,30 +30,23 @@ namespace BankAPI.Controllers
             return new OkObjectResult(accountService.getAllAccount());
         }
 
-        [HttpGet("{type}")]
-        public IActionResult GetAllCreditcardOfType(string type)
-        {
-            if (type.Equals("deposit"))
-            {
-                return new OkObjectResult(accountService.getAllDepositAccounts());
-            }
-            if (type.Equals("savings"))
-            {
-                return new OkObjectResult(accountService.getAllSavingsAccounts());
-            }
-            return new BadRequestObjectResult("there is no Account with type of " + type);
-        }
-
         [HttpPost]
         public IActionResult createAccount([FromBody]Dictionary<String, String> jsonMap)
         {
-            try { 
-            Account account = accountService.createNewAccount(jsonMap["type"], jsonMap["name"], jsonMap["currency"]);
+            try {
+                string type = jsonMap["type"];
+                string name = jsonMap["name"];
+                string currency = jsonMap["currency"];
+                if(name.Length < 4 && !name.Contains(" "))
+                {
+                    return new BadRequestObjectResult("Invalid name");
+                }
+                Account account = accountService.createNewAccount(jsonMap["type"], jsonMap["name"], jsonMap["currency"]);
                 return new OkObjectResult(account);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
-                return new BadRequestObjectResult("Invalid account type");
+                return new BadRequestObjectResult(e.Message);
             }
         }
 
@@ -71,7 +64,6 @@ namespace BankAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult delete(Int32 id)
         {
-
             Account account = accountService.getAccountById(id);
             if (account == null)
             {
@@ -84,25 +76,24 @@ namespace BankAPI.Controllers
         [HttpPut("withdraw")]
         public IActionResult withDrawMoney([FromBody]Dictionary<String, String> jsonMap)
         {
-            Int32 accountId = Int32.Parse(jsonMap["id"]);
+            Account account = accountService.getAccountById(Int32.Parse(jsonMap["id"]));
             decimal amount;
             try { 
                 amount = Decimal.Parse(jsonMap["amount"]);
             } catch(FormatException)
             {
-                return new BadRequestObjectResult("invalid money format");
+                return new BadRequestObjectResult("Invalid request, please provide a valid number to withdraw");
             }
-            Account account = accountService.getAccountById(accountId);
             if(account == null)
             {
                 return StatusCode(404);
             }
             if(amount <= 0)
             {
-                return new BadRequestObjectResult("Invalid money amount");
+                return new BadRequestObjectResult("Invalid request, cant withdraw sum lower than 1!");
             }
             if (!accountService.canWithDrawAmount(account, amount) ){
-                return new BadRequestObjectResult("Can't withdraw that amount");
+                return new BadRequestObjectResult("That sum is not withDrawable!");
             }
             return new OkObjectResult(accountService.withDrawAmount(account, amount));
         }
@@ -110,7 +101,7 @@ namespace BankAPI.Controllers
         [HttpPut("upload")]
         public IActionResult uploadMoney([FromBody]Dictionary<String, String> jsonMap)
         {
-            Int32 accountId = Int32.Parse(jsonMap["id"]);
+            Account account = accountService.getAccountById(Int32.Parse(jsonMap["id"]));
             decimal amount;
             try
             {
@@ -118,16 +109,15 @@ namespace BankAPI.Controllers
             }
             catch (FormatException)
             {
-                return new BadRequestObjectResult("invalid money format");
+                return new BadRequestObjectResult("Invalid request, please provide a valid number to withdraw");
             }
-            Account account = accountService.getAccountById(accountId);
             if (account == null)
             {
                 return StatusCode(404);
             }
             if (amount <= 0)
             {
-                return new BadRequestObjectResult("Invalid money amount");
+                return new BadRequestObjectResult("Invalid request, cant withdraw sum lower than 1!");
             }
             return new OkObjectResult(accountService.uploadAmount(account, amount));
         }
@@ -144,11 +134,11 @@ namespace BankAPI.Controllers
             }
             catch (FormatException)
             {
-                return new BadRequestObjectResult("invalid money format");
+                return new BadRequestObjectResult("Invalid request, please provide a valid number to transfer");
             }
             if (amount <= 0)
             {
-                return new BadRequestObjectResult("Invalid money amount");
+                return new BadRequestObjectResult("Invalid request, cant withdraw sum lower than 1!");
             }
             if (senderAccount == null || receiverAccount == null)
             {
@@ -156,14 +146,14 @@ namespace BankAPI.Controllers
             }
             if (!senderAccount.isAmountWithdrawable(amount))
             {
-                return new BadRequestObjectResult("Sender has innuficcsen funds");
+                return new BadRequestObjectResult("Sender has insufficient funds!");
             }
             try { 
                 decimal moneyExchaned = await currencyService.exChange(100m, receiverAccount.currency, senderAccount.currency);
             }
             catch (KeyNotFoundException)
             {
-                return new BadRequestObjectResult("Unkown currency");
+                return new BadRequestObjectResult("Unkown currency!");
             }
             accountService.transferMoney(senderAccount, receiverAccount, amount);
             return new OkResult();
