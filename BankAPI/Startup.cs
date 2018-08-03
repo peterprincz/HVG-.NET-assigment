@@ -37,6 +37,7 @@ namespace BankAPI
         {
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            //JS hates CORS
             app.UseCors(builder => builder
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

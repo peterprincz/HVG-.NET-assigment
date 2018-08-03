@@ -22,7 +22,8 @@ namespace BankAPI.Services
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-               responseData = await response.Content.ReadAsAsync<ExchangeRateResponse>();
+                //The free API only supports USD conversion 
+                responseData = await response.Content.ReadAsAsync<ExchangeRateResponse>();
                 decimal amountINUSD = amount / responseData.quotes["USD" + from];
                 return amountINUSD * responseData.quotes["USD" + to];
             } else

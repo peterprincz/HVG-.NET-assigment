@@ -30,7 +30,7 @@ namespace BankAPI.Services
             }
             if (ownerName.Length < 4|| !ownerName.Contains(" "))
             {
-                throw new ArgumentException("Invalid Account type");
+                throw new ArgumentException("Invalid Owner name");
             }
             if (type.Equals("deposit"))
             {

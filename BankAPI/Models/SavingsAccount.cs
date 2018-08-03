@@ -7,12 +7,11 @@ namespace BankAPI.Models
 {
     public class SavingsAccount : Account, IAccount
     {
-        public decimal startingMoney = 5000;
 
         public decimal interestRate { get; set; }
 
         public SavingsAccount() {
-            this.TYPE = "savings";
+            TYPE = "savings";
         }
 
         public SavingsAccount(string owner, string currency)
@@ -20,7 +19,6 @@ namespace BankAPI.Models
         {
             TYPE = "deposit";
             interestRate = 5;
-            balance = startingMoney;
         }
 
 

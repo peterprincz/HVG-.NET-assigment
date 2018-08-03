@@ -8,8 +8,11 @@ namespace BankAPI.Models
 {
     public abstract class Account : IAccount
     {
+
         public static Int32 idCounter { get; private set; } = 1;
         public static Int32 accountNumberCounter { get; set; } = 10;
+
+        public static decimal startingBonus = 5000;
 
         [Key]
         public Int32 id { get; set; }
@@ -32,7 +35,7 @@ namespace BankAPI.Models
             accountNumber = "012-" + accountNumberCounter.ToString() + "-354";
             accountNumberCounter += 6191;
             this.owner = owner;
-            balance = 0;
+            balance = Account.startingBonus;
             this.currency = currency;
         }
 
