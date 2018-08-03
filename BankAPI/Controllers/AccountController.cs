@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankAPI.Controllers
 {
-    [Route("api/")]
-    public class AccountController : ControllerBase
+    [Route("account/")]
+    public class AccountController : Controller
     {
 
         private readonly MemRepo memrepo;
@@ -33,11 +33,12 @@ namespace BankAPI.Controllers
         [HttpPost]
         public IActionResult createAccount([FromBody]Dictionary<String, String> jsonMap)
         {
-            try {
+            try
+            {
                 string type = jsonMap["type"];
                 string name = jsonMap["name"];
                 string currency = jsonMap["currency"];
-                if(name.Length < 4 && !name.Contains(" "))
+                if (name.Length < 4 && !name.Contains(" "))
                 {
                     return new BadRequestObjectResult("Invalid name");
                 }
@@ -54,7 +55,7 @@ namespace BankAPI.Controllers
         public IActionResult getAccountById(Int32 id)
         {
             Account account = accountService.getAccountById(id);
-            if(account == null)
+            if (account == null)
             {
                 return new NotFoundObjectResult("Creditcard was not found with id of" + id);
             }
@@ -78,21 +79,24 @@ namespace BankAPI.Controllers
         {
             Account account = accountService.getAccountById(Int32.Parse(jsonMap["id"]));
             decimal amount;
-            try { 
+            try
+            {
                 amount = Decimal.Parse(jsonMap["amount"]);
-            } catch(FormatException)
+            }
+            catch (FormatException)
             {
                 return new BadRequestObjectResult("Invalid request, please provide a valid number to withdraw");
             }
-            if(account == null)
+            if (account == null)
             {
                 return StatusCode(404);
             }
-            if(amount <= 0)
+            if (amount <= 0)
             {
                 return new BadRequestObjectResult("Invalid request, cant withdraw sum lower than 1!");
             }
-            if (!accountService.canWithDrawAmount(account, amount) ){
+            if (!accountService.canWithDrawAmount(account, amount))
+            {
                 return new BadRequestObjectResult("That sum is not withDrawable!");
             }
             return new OkObjectResult(accountService.withDrawAmount(account, amount));
@@ -148,7 +152,8 @@ namespace BankAPI.Controllers
             {
                 return new BadRequestObjectResult("Sender has insufficient funds!");
             }
-            try { 
+            try
+            {
                 decimal moneyExchaned = await currencyService.exChange(100m, receiverAccount.currency, senderAccount.currency);
             }
             catch (KeyNotFoundException)

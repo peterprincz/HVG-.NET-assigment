@@ -94,9 +94,6 @@ namespace BankAPI.Services
             senderAccount.withDraw(amount);
             memrepo.SaveChanges();
         }
-
-
-
     }
 }
 
